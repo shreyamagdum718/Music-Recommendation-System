@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # =======================
 st.set_page_config(
     page_title="Music Recommendation System",
-    page_icon="🎵",
+    page_icon="🎵"  "🎵",
     layout="wide"
 )
 
