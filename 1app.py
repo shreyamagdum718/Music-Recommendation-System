@@ -121,6 +121,20 @@ st.title("🎵 Music Recommendation System")
 df = pd.read_csv("final_music_data_updated.csv")
 
 # =======================
+# Load or Generate Similarity Matrix
+# =======================
+if not os.path.exists("similarities.pkl"):
+    cv = CountVectorizer(max_features=10000, stop_words="english")
+    dtm = cv.fit_transform(df["tags"])
+    similarities = cosine_similarity(dtm)
+
+    with open("similarities.pkl", "wb") as f:
+        pickle.dump(similarities, f)
+else:
+    with open("similarities.pkl", "rb") as f:
+        similarities = pickle.load(f)
+
+# =======================
 # Dataset Statistics
 # =======================
 total_songs = len(df)
