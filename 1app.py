@@ -120,6 +120,15 @@ st.title("🎵 Music Recommendation System")
 # =======================
 df = pd.read_csv("final_music_data_updated.csv")
 
+# Add rating column
+import random
+
+if "rating" not in df.columns:
+    df["rating"] = [
+        round(random.uniform(3.5, 5.0), 1)
+        for _ in range(len(df))
+    ]
+
 # =======================
 # Load or Generate Similarity Matrix
 # =======================
@@ -260,27 +269,46 @@ if st.button("🎶 Recommend Songs"):
             reverse=True
         )
 
+        # Get selected song language
+        selected_language = df.iloc[index]['language']
+
         st.subheader("🎧 Recommended Songs")
 
         count = 1
+        recommended_list = []
 
-        for i in similarity_index[1:6]:
+        # Filter songs with same language
+        for i in similarity_index[1:]:
+            song = df.iloc[i[0]]
 
-            st.markdown(f"""
-<div class="song-card">
-<h4 style="color:#000000;">🎵 {count}. {get_song_name(i[0])}</h4>
-</div>
-""", unsafe_allow_html=True)
+            if song['language'] == selected_language:
+                recommended_list.append(song)
+
+            if len(recommended_list) == 5:
+                break
+
+
+        # Display recommendations
+        for song in recommended_list:
+
+            st.markdown(
+                f"""
+                <div class="song-card">
+                    <h4 style="color:#000000;">
+                        🎵 {count}. {song['song_name']}
+                    </h4>
+                    <p>⭐ Rating: {song['rating']}/5</p>
+                    <p>👨‍🎤 Artist: {song['artist']}</p>  
+                    <p>🌍 Language: {song['language']}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
             count += 1
-
-        st.markdown(
-    "<h1 style='text-align:center;'>🎵Thank You🎵</h1>",
-    unsafe_allow_html=True
-)
-        st.snow()
+    st.snow()
 # =======================
 # Footer
 # =======================
 st.markdown("---")
-st.caption("🎵 Music Recommendation System | Developed using Streamlit ❤️")
+st.caption("Thank You ❤️")
